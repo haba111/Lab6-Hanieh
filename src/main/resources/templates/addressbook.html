@@ -4,18 +4,21 @@
     <title>All AddressBooks</title>
 </head>
 <body>
+
 <h1>All AddressBooks</h1>
 
-<ul>
-    <li th:each="ab : ${addressBooks}">
-        <a th:href="@{'/addressbooks/' + ${ab.id}}">AddressBook [[${ab.id}]]</a>
-    </li>
-</ul>
-
-<!-- Form to create a new AddressBook -->
+<!-- دکمه برای ساخت AddressBook جدید -->
 <form action="#" method="post" onsubmit="createAddressBook(event)">
     <button type="submit">Create New AddressBook</button>
 </form>
+
+<!-- لیست AddressBookها -->
+<ul>
+    <li th:each="ab : ${addressBooks}">
+        <a th:href="@{'/addressbooks/' + ${ab.id}}"
+           th:text="'AddressBook #' + ${ab.id}"></a>
+    </li>
+</ul>
 
 <script>
     function createAddressBook(event) {
