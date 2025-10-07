@@ -1,15 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>AddressBook</title>
+    <title>AddressBook [[${addressBook.id}]]</title>
 </head>
 <body>
-<h1 th:text="'AddressBook ' + ${addressBook.id}"></h1>
 
-<ul>
-    <li th:each="buddy : ${addressBook.buddies}"
-        th:text="${buddy.id} + '. ' + ${buddy.name} + ' Phone Number: ' + ${buddy.phoneNumber} + ''">
-    </li>
-</ul>
+<h1>AddressBook [[${addressBook.id}]]</h1>
+
+<!-- Form to add a new buddy -->
+<form th:action="@{'/addressbooks/' + ${addressBook.id} + '/addBuddy'}" method="post" th:object="${newBuddy}">
+    <input type="text" th:field="*{name}" placeholder="Buddy Name" required />
+    <input type="text" th:field="*{phoneNumber}" placeholder="Phone Number" required />
+    <button type="submit">Add Buddy</button>
+</form>
+
+<!-- List existing buddies -->
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Phone Number</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="buddy : ${addressBook.buddies}">
+        <td th:text="${buddy.id}">1</td>
+        <td th:text="${buddy.name}">Name</td>
+        <td th:text="${buddy.phoneNumber}">123-456</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Button to create a new AddressBook -->
+<form action="#" method="post" onsubmit="createAddressBook(event)">
+    <button type="submit">Create New AddressBook</button>
+</form>
+
+<!-- Link back to address book list -->
+<p><a th:href="@{/addressbooks}">Back to Address Books</a></p>
+
+<script>
+    function createAddressBook(event) {
+        event.preventDefault();
+        fetch('/api/addressbooks', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = '/addressbooks/' + data.id;
+            });
+    }
+</script>
+
 </body>
 </html>
