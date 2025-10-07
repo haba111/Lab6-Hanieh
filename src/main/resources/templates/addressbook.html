@@ -1,24 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>All AddressBooks</title>
+    <title>AddressBook [[${addressBook.id}]]</title>
 </head>
 <body>
 
-<h1>All AddressBooks</h1>
+<h1>AddressBook [[${addressBook.id}]]</h1>
 
-<!-- دکمه برای ساخت AddressBook جدید -->
+<!-- Debug info -->
+<p th:if="${addressBook == null}"> AddressBook is null</p>
+<p th:if="${addressBook.buddies.empty}"> No buddies found in this address book</p>
+
+<!-- Form to add a new buddy -->
+<form th:action="@{'/addressbooks/' + ${addressBook.id} + '/addBuddy'}"
+      method="post" th:object="${newBuddy}">
+    <input type="text" th:field="*{name}" placeholder="Buddy Name" required />
+    <input type="text" th:field="*{phoneNumber}" placeholder="Phone Number" required />
+    <button type="submit">Add Buddy</button>
+</form>
+
+<!-- List existing buddies -->
+<table border="1" cellpadding="5" cellspacing="0" th:if="${not #lists.isEmpty(addressBook.buddies)}">
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Phone Number</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="buddy : ${addressBook.buddies}">
+        <td th:text="${buddy.id}">1</td>
+        <td th:text="${buddy.name}">Name</td>
+        <td th:text="${buddy.phoneNumber}">123-456</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Button to create a new AddressBook -->
 <form action="#" method="post" onsubmit="createAddressBook(event)">
     <button type="submit">Create New AddressBook</button>
 </form>
 
-<!-- لیست AddressBookها -->
-<ul>
-    <li th:each="ab : ${addressBooks}">
-        <a th:href="@{'/addressbooks/' + ${ab.id}}"
-           th:text="'AddressBook #' + ${ab.id}"></a>
-    </li>
-</ul>
+<!-- Link back to address book list -->
+<p><a th:href="@{/addressbooks}">Back to Address Books</a></p>
 
 <script>
     function createAddressBook(event) {
